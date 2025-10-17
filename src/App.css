@@ -1,0 +1,15 @@
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.resume-checker-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .resume-checker-grid {
+    grid-template-columns: 1fr;
+  }
+}
