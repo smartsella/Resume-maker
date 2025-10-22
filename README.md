@@ -31,7 +31,7 @@ Make sure you have [Node.js](https://nodejs.org/) (which includes npm) installed
 1.  **Clone the repository:**
     (Replace `YOUR_USERNAME` and `YOUR_REPOSITORY` with your actual GitHub info)
     ```bash
-    git clone [https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git](https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git)
+    git clone [https://github.com/smartsella/Resume-maker.git](https://github.com/smartsella/Resume-maker.git)
     ```
 
 2.  **Navigate to the project directory:**
@@ -49,17 +49,3 @@ Make sure you have [Node.js](https://nodejs.org/) (which includes npm) installed
     npm start
     ```
     This runs the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-## 🌐 Live Demo (Optional)
-
-*(Once you deploy your project, add the live link here)*
-
-[View Live Project](https://your-deployed-link.com)
-
-## 📸 Screenshots (Optional)
-
-*(It's highly recommended to add screenshots of your running application)*
-
-| Desktop View | Mobile View |
-| :---: | :---: |
-| ![Desktop Screenshot](link-to-your-desktop-screenshot.png) | ![Mobile Screenshot](link-to-your-mobile-screenshot.png) |
