@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "./components/Dashboard";
-import ResumeForm from "./components/ResumeForm";
-import Header from "./components/Header";
+import Dashboard from "./pages/Dashboard.jsx";
+import ResumeForm from "./pages/ResumeForm.jsx";
+import Header from "./components/Header.jsx";
+import Login from "./pages/login.jsx";
+import Register from "./pages/Register.jsx";
 import "./App.css";
 
 const App = () => {
@@ -36,7 +38,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Dashboard resumeData={resumeData} />} />
           <Route
-            path="/build"
+            path="/resumemaking"
             element={
               <ResumeForm
                 resumeData={resumeData}
@@ -44,6 +46,8 @@ const App = () => {
               />
             }
           />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </div>
     </Router>

@@ -169,7 +169,7 @@ const Dashboard = ({ resumeData }) => {
             </div>
           </div>
 
-          <Link to="/build">
+          <Link to="/resumemaking">
             <button className="px-8 py-3 bg-blue-500 text-white rounded-xl font-semibold hover:bg-blue-600 transition-colors">
               {score === 0 ? "Start Building" : "Improve Resume"}
             </button>

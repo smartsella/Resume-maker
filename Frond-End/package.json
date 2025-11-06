@@ -2,15 +2,12 @@
   "name": "resume-maker",
   "private": true,
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "homepage": "https://github.com/smartsella/Resume-maker",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",
