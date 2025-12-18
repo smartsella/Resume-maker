@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard.jsx";
+import Dashboard from "./components/Dashboard.jsx";
 import ResumeForm from "./pages/ResumeForm.jsx";
-import Header from "./components/Header.jsx";
-import Login from "./pages/login.jsx";
-import Register from "./pages/Register.jsx";
+import Header from "./components/Navbar.jsx";
+import Login from "./registration/Login.jsx";
+import Register from "./registration/Register.jsx";
 import "./App.css";
+import VerifyOTP from "./registration/VerifyOTP.jsx";
+import NotFound from "./pages/NotFound.jsx";
+import ForgotPassword from "./registration/ForgotPassword.jsx";
 
 const App = () => {
   const [resumeData, setResumeData] = useState({
@@ -48,6 +51,9 @@ const App = () => {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-otp" element={<VerifyOTP />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
       </div>
     </Router>

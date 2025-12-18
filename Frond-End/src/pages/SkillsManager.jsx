@@ -1,9 +1,8 @@
-import React, { useState } from "react";
 import { FaPlus, FaTrash, FaCheckCircle } from "react-icons/fa";
 
 const SkillsManager = ({ resumeData, setResumeData }) => {
-  const [newSkill, setNewSkill] = useState("");
-  const [skillCategory, setSkillCategory] = useState("technical");
+  //   const [newSkill, setNewSkill] = useState("");
+  //   const [skillCategory, setSkillCategory] = useState("technical");
 
   const popularSkills = {
     technical: [
@@ -32,16 +31,16 @@ const SkillsManager = ({ resumeData, setResumeData }) => {
     ],
   };
 
-  const addSkill = () => {
-    if (newSkill.trim()) {
-      const updatedSkills = {
-        ...resumeData.skills,
-        [skillCategory]: [...resumeData.skills[skillCategory], newSkill.trim()],
-      };
-      setResumeData((prev) => ({ ...prev, skills: updatedSkills }));
-      setNewSkill("");
-    }
-  };
+  // const addSkill = () => {
+  //   if (newSkill.trim()) {
+  //     const updatedSkills = {
+  //       ...resumeData.skills,
+  //       [skillCategory]: [...resumeData.skills[skillCategory], newSkill.trim()],
+  //     };
+  //     setResumeData((prev) => ({ ...prev, skills: updatedSkills }));
+  //     setNewSkill("");
+  //   }
+  // };
 
   const removeSkill = (category, index) => {
     const updatedSkills = {
@@ -59,14 +58,36 @@ const SkillsManager = ({ resumeData, setResumeData }) => {
     setResumeData((prev) => ({ ...prev, skills: updatedSkills }));
   };
 
+  // submit handle
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:3000/api/auth/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(resumeData),
+      });
+
+      const data = await response.json();
+      console.log("Resume Saved:", data);
+
+      alert("Resume saved successfully!");
+    } catch (error) {
+      console.error("Submit Error:", error);
+      alert("Something went wrong while saving.");
+    }
+  };
+
   return (
     <div className="space-y-8">
-      <h3 className="text-2xl font-bold text-gray-800">
-        Skills & Technologies
-      </h3>
+      <form action="" onClick={handleSubmit}>
+        <h3 className="text-2xl font-bold text-gray-800">
+          Skills & Technologies
+        </h3>
 
-      {/* Add New Skill */}
-      <div className="bg-gray-50 rounded-xl p-6">
+        {/* Add New Skill */}
+        {/* <div className="bg-gray-50 rounded-xl p-6">
         <h4 className="text-lg font-semibold text-gray-800 mb-4">
           Add New Skill
         </h4>
@@ -89,8 +110,8 @@ const SkillsManager = ({ resumeData, setResumeData }) => {
               <option value="technical">Technical</option>
               <option value="soft">Soft Skill</option>
             </select>
-          </div>
-          <div>
+          </div> */}
+        {/* <div>
             <button
               onClick={addSkill}
               className="w-full py-3 bg-blue-500 text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-600"
@@ -99,91 +120,103 @@ const SkillsManager = ({ resumeData, setResumeData }) => {
               Add Skill
             </button>
           </div>
-        </div>
-      </div>
+        </div> */}
+        {/* </div> */}
 
-      {/* Skills Display */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Technical Skills */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-lg font-semibold text-gray-800">
-              Technical Skills
-            </h4>
-            {resumeData.skills.technical.length >= 3 && (
-              <FaCheckCircle className="text-green-500" />
-            )}
-          </div>
+        {/* Skills Display */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Technical Skills */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-800">
+                Technical Skills
+              </h4>
+              {resumeData.skills.technical.length >= 3 && (
+                <FaCheckCircle className="text-green-500" />
+              )}
+            </div>
 
-          <div className="flex flex-wrap gap-2 mb-4">
-            {popularSkills.technical.map((skill) => (
-              <button
-                key={skill}
-                onClick={() => addPopularSkill(skill, "technical")}
-                className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition-colors"
-              >
-                {skill} +
-              </button>
-            ))}
-          </div>
-
-          <div className="space-y-2">
-            {resumeData.skills.technical.map((skill, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-              >
-                <span className="font-medium">{skill}</span>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {popularSkills.technical.map((skill) => (
                 <button
-                  onClick={() => removeSkill("technical", index)}
-                  className="text-red-500 hover:text-red-700 p-1"
+                  key={skill}
+                  onClick={() => addPopularSkill(skill, "technical")}
+                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition-colors"
                 >
-                  <FaTrash />
+                  {skill} +
                 </button>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
 
-        {/* Soft Skills */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-lg font-semibold text-gray-800">Soft Skills</h4>
-            {resumeData.skills.soft.length >= 2 && (
-              <FaCheckCircle className="text-green-500" />
-            )}
-          </div>
-
-          <div className="flex flex-wrap gap-2 mb-4">
-            {popularSkills.soft.map((skill) => (
-              <button
-                key={skill}
-                onClick={() => addPopularSkill(skill, "soft")}
-                className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm hover:bg-green-200 transition-colors"
-              >
-                {skill} +
-              </button>
-            ))}
+            <div className="space-y-2">
+              {resumeData.skills.technical.map((skill, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
+                  <span className="font-medium">{skill}</span>
+                  <button
+                    onClick={() => removeSkill("technical", index)}
+                    className="text-red-500 hover:text-red-700 p-1"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="space-y-2">
-            {resumeData.skills.soft.map((skill, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-              >
-                <span className="font-medium">{skill}</span>
+          {/* Soft Skills */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-800">
+                Soft Skills
+              </h4>
+              {resumeData.skills.soft.length >= 2 && (
+                <FaCheckCircle className="text-green-500" />
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              {popularSkills.soft.map((skill) => (
                 <button
-                  onClick={() => removeSkill("soft", index)}
-                  className="text-red-500 hover:text-red-700 p-1"
+                  key={skill}
+                  onClick={() => addPopularSkill(skill, "soft")}
+                  className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm hover:bg-green-200 transition-colors"
                 >
-                  <FaTrash />
+                  {skill} +
                 </button>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            <div className="space-y-2">
+              {resumeData.skills.soft.map((skill, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
+                  <span className="font-medium">{skill}</span>
+                  <button
+                    onClick={() => removeSkill("soft", index)}
+                    className="text-red-500 hover:text-red-700 p-1"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+        {/* submit handle */}
+        <div className="mt-6 flex justify-end">
+          <button
+            type="submit"
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md transition-all duration-200 active:scale-95"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

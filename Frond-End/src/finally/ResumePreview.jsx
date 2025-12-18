@@ -8,11 +8,6 @@ import {
 } from "react-icons/fa";
 
 const ResumePreview = ({ resumeData }) => {
-  // Download PDF Function
-  const downloadPDF = () => {
-    alert("PDF download feature would be implemented here!");
-  };
-
   return (
     <div className="space-y-6">
       {/* Header with Download */}
@@ -20,15 +15,6 @@ const ResumePreview = ({ resumeData }) => {
         <div>
           <h3 className="text-xl font-bold text-black">Resume Preview</h3>
         </div>
-
-        {/* Download Button */}
-        <button
-          onClick={downloadPDF}
-          className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded font-semibold border border-black"
-        >
-          <FaFilePdf />
-          <span>Download PDF</span>
-        </button>
       </div>
 
       {/* Resume Content */}

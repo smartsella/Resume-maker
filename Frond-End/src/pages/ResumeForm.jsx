@@ -14,7 +14,7 @@ import {
 import SkillsManager from "./SkillsManager";
 import ProjectsManager from "./ProjectsManager";
 import ExperienceManager from "./ExperienceManager";
-import ResumePreview from "./ResumePreview";
+import ResumePreview from "../finally/ResumePreview";
 
 const ResumeForm = ({ resumeData, setResumeData }) => {
   const [activeTab, setActiveTab] = useState("personal");
@@ -56,6 +56,27 @@ const ResumeForm = ({ resumeData, setResumeData }) => {
         return resumeData.education.length > 0;
       default:
         return false;
+    }
+  };
+
+  // submit logic code
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:3000/api/auth/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(resumeData),
+      });
+
+      const data = await response.json();
+      console.log("Resume Saved:", data);
+
+      alert("Resume saved successfully!");
+    } catch (error) {
+      console.error("Submit Error:", error);
+      alert("Something went wrong while saving.");
     }
   };
 
@@ -173,6 +194,16 @@ const ResumeForm = ({ resumeData, setResumeData }) => {
                 <span>Minimum 50 characters recommended</span>
                 <span>{resumeData.summary.length}/50</span>
               </div>
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md transition-all duration-200 active:scale-95"
+              >
+                Submit
+              </button>
             </div>
           </div>
         );
