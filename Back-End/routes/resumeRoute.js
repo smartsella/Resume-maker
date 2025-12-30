@@ -1,11 +1,29 @@
 import express from "express";
-import { saveResume, getResumeById, updateResumeSection, updateTemplate } from "../controller/resumeController.js";
+import {
+  saveResume,
+  getResumeById,
+  updateResumeSection,
+  updateTemplate,
+} from "../controller/Personalinfo.js";
+import { authMiddleware } from "../middlewares/authMiddlewares.js";
 
-const router = express.Router();
+const resumeRouter = express.Router();
 
-router.post("/", saveResume);
-router.get("/:id", getResumeById);
-router.put("/:id/section", updateResumeSection);
-router.put("/:id/template", updateTemplate);
+/**
+ * Resume API
+ *
+ * POST   /               - create/save resume (protected)
+ * GET    /:id            - fetch resume by id (public)
+ * PUT    /:id/section    - update a specific resume section (protected)
+ * PUT    /:id/template   - update resume template selection (protected)
+ *
+ * Business logic and handler references unchanged to preserve existing behavior.
+ */
 
-export default router;
+resumeRouter.post("/", authMiddleware, saveResume);
+resumeRouter.get("/:id", getResumeById);
+resumeRouter.put("/:id/section", authMiddleware, updateResumeSection);
+resumeRouter.put("/:id/template", authMiddleware, updateTemplate);
+
+// Export router for use in main app
+export default resumeRouter;

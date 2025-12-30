@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -47,6 +48,8 @@ const Login = () => {
     if (error) setError("");
   };
 
+  const { login } = useContext(AuthContext);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -72,10 +75,9 @@ const Login = () => {
         return;
       }
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      navigate("/");
+      // Use AuthContext to store token and user
+      login(data.token, data.user);
+      navigate("/dashboard");
     } catch (err) {
       setError("Server error. Please try again.", err);
     } finally {
@@ -102,6 +104,7 @@ const Login = () => {
             onChange={handleChange}
             placeholder="Email"
             className="w-full border px-4 py-2 rounded-lg"
+            required
           />
 
           <div className="relative">
@@ -112,6 +115,7 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Password"
               className="w-full border px-4 py-2 rounded-lg"
+              required
             />
             <button
               type="button"

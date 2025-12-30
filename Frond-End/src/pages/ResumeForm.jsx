@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import axios from "axios";
 import {
   FaUser,
   FaCode,
@@ -6,7 +7,8 @@ import {
   FaBriefcase,
   FaRocket,
   FaGraduationCap,
-  FaFileAlt,
+  FaEye,
+  FaPalette,
   FaCheckCircle,
 } from "react-icons/fa";
 
@@ -15,6 +17,8 @@ import SkillsManager from "./SkillsManager";
 import ProjectsManager from "./ProjectsManager";
 import ExperienceManager from "./ExperienceManager";
 import ResumePreview from "../finally/ResumePreview";
+import ResumeTemplates from "../template/ResumeTemplates.jsx";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 const ResumeForm = ({ resumeData, setResumeData }) => {
   const [activeTab, setActiveTab] = useState("personal");
@@ -26,7 +30,8 @@ const ResumeForm = ({ resumeData, setResumeData }) => {
     { id: "experience", label: "Internships", icon: FaBriefcase },
     { id: "hackathons", label: "Hackathons", icon: FaRocket },
     { id: "education", label: "Education", icon: FaGraduationCap },
-    { id: "preview", label: "Preview", icon: FaFileAlt },
+    { id: "preview", label: "Preview", icon: FaEye },
+    { id: "template", label: "Template", icon: FaPalette },
   ];
 
   const updatePersonalInfo = (field, value) => {
@@ -60,23 +65,70 @@ const ResumeForm = ({ resumeData, setResumeData }) => {
   };
 
   // submit logic code
+  const { token } = useContext(AuthContext);
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e?.preventDefault();
+
+    // Minimal validation: require name and email
+    if (!resumeData.personalInfo?.name && !resumeData.personalInfo?.fullName) {
+      alert("Please enter your full name before submitting.");
+      return;
+    }
+    if (!resumeData.personalInfo?.email) {
+      alert("Please enter your email before submitting.");
+      return;
+    }
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(resumeData),
-      });
+      // Prepare payload to match backend expectations
+      const skills = [
+        ...(resumeData.skills?.technical || []),
+        ...(resumeData.skills?.soft || []),
+      ];
 
-      const data = await response.json();
+      const experience = [
+        ...(resumeData.experience?.internships || []),
+        ...(resumeData.experience?.jobs || []),
+        ...(resumeData.experience?.hackathons || []),
+      ];
+
+      const personalInfo = {
+        ...resumeData.personalInfo,
+        fullName:
+          resumeData.personalInfo?.fullName ||
+          resumeData.personalInfo?.name ||
+          "",
+      };
+
+      const payload = {
+        ...resumeData,
+        personalInfo,
+        skills,
+        experience,
+      };
+
+      const authToken = token || localStorage.getItem("token");
+
+      const response = await axios.post(
+        "http://localhost:3000/api/resume/",
+        payload,
+        {
+          headers: { Authorization: `Bearer ${authToken}` },
+        }
+      );
+
+      const data = response.data;
       console.log("Resume Saved:", data);
+
+      if (data?.resume?._id) {
+        localStorage.setItem("resumeId", data.resume._id);
+      }
 
       alert("Resume saved successfully!");
     } catch (error) {
       console.error("Submit Error:", error);
-      alert("Something went wrong while saving.");
+      alert(error.response?.data?.msg || "Something went wrong while saving.");
     }
   };
 
@@ -251,6 +303,14 @@ const ResumeForm = ({ resumeData, setResumeData }) => {
             setResumeData={setResumeData}
             type="education"
             title="Education"
+          />
+        );
+
+      case "template":
+        return (
+          <ResumeTemplates
+            resumeData={resumeData}
+            onBack={() => setActiveTab("preview")}
           />
         );
 

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext.jsx";
 import { FaPlus, FaTrash, FaCheckCircle } from "react-icons/fa";
 
 const ProjectsManager = ({ resumeData, setResumeData }) => {
@@ -41,6 +42,42 @@ const ProjectsManager = ({ resumeData, setResumeData }) => {
   const removeProject = (index) => {
     const updatedProjects = resumeData.projects.filter((_, i) => i !== index);
     setResumeData((prev) => ({ ...prev, projects: updatedProjects }));
+  };
+
+  const { token } = useContext(AuthContext);
+
+  const submitProject = async (index) => {
+    try {
+      const resumeId = localStorage.getItem("resumeId");
+      if (!resumeId)
+        return alert("Save your resume first (click Submit on Personal tab).");
+
+      const response = await fetch(
+        `http://localhost:3000/api/resume/${resumeId}/section`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            section: "projects",
+            data: resumeData.projects,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      if (!response.ok) {
+        console.error("Project submit failed:", data);
+        return alert(data.msg || "Failed to submit project");
+      }
+
+      alert("Projects saved to backend successfully.");
+    } catch (err) {
+      console.error("SubmitProject Error:", err);
+      alert("Error submitting project. See console.");
+    }
   };
 
   return (
@@ -133,7 +170,7 @@ const ProjectsManager = ({ resumeData, setResumeData }) => {
           </div>
           <button
             onClick={addProject}
-            className="w-full py-3 bg-blue-500 text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-600"
+            className="w-full py-3 bg-green-500 text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-600"
           >
             <FaPlus />
             Add Project
@@ -178,6 +215,12 @@ const ProjectsManager = ({ resumeData, setResumeData }) => {
                   </span>
                 ))}
               </div>
+              <button
+                onClick={() => submitProject(index)}
+                className="w-full py-3 bg-blue-800 text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-600"
+              >
+                Submit Project
+              </button>
               <div className="flex justify-between text-sm text-gray-500">
                 {project.link && (
                   <a
