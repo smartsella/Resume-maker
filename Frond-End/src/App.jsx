@@ -1,24 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
+
 import Dashboard from "./components/Dashboard.jsx";
 import ResumeForm from "./pages/ResumeForm.jsx";
 import Header from "./components/Navbar.jsx";
 import Login from "./registration/Login.jsx";
 import Register from "./registration/Register.jsx";
-import ProtectedRoute from "./components/ProtectedRoute";
-import "./App.css";
 import VerifyOTP from "./registration/VerifyOTP.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import ForgotPassword from "./registration/ForgotPassword.jsx";
 import ClasicTemplate from "./template/ClasicTemplate.jsx";
 import CreativeTemplate from "./template/CreativeTemplate.jsx";
 
+import "./App.css";
+
 const App = () => {
+  // Resume state
   const [resumeData, setResumeData] = useState({
     personalInfo: {
       name: "",
@@ -42,18 +44,40 @@ const App = () => {
     education: [],
   });
 
-  // Always show login page on first entrance by redirecting root to /login.
-  // Dashboard should remain accessible without login at /dashboard.
+  // 🔹 API TEST STATE
+  const [apiData, setApiData] = useState(null);
+
+  // 🔹 BACKEND CALL (/api/test)
+  useEffect(() => {
+    fetch("/api/test")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Backend response:", data);
+        setApiData(data);
+      })
+      .catch((err) => console.error("API error:", err));
+  }, []);
+
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
         <Header />
+
+        {/* Backend test display (temporary) */}
+        {apiData && (
+          <div className="text-center text-green-700 text-sm py-2">
+            Backend OK: {JSON.stringify(apiData)}
+          </div>
+        )}
+
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
+
           <Route
             path="/dashboard"
             element={<Dashboard resumeData={resumeData} />}
           />
+
           <Route
             path="/resumemaking"
             element={
@@ -63,13 +87,14 @@ const App = () => {
               />
             }
           />
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
-          <Route path="*" element={<NotFound />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/clasic" element={<ClasicTemplate />} />
           <Route path="/creative" element={<CreativeTemplate />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>
